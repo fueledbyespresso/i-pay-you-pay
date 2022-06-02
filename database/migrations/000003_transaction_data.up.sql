@@ -11,7 +11,7 @@ create unique index ledger_group_id_uindex
 
 create table transaction
 (
-    total               integer generated always as identity,
+    total               integer,
     description         varchar(256) default ''::character varying not null,
     time_of_transaction date                                       not null,
     time_of_record      timestamp                                  not null,

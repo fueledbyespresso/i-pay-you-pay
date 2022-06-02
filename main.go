@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+var groups = make(map[string]*api.Hub)
+
 //Load the environment variables from the projectvars.env file
 func initEnv() {
 	if _, err := os.Stat("projectvars.env"); err == nil {

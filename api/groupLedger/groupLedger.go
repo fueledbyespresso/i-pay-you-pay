@@ -10,3 +10,8 @@ func CreateGroup(db *database.DB) gin.HandlerFunc {
 
 	}
 }
+func GetGroup(db *database.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+	}
+}
