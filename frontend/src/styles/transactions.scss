@@ -1,0 +1,8 @@
+.transactions{
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+}
+.transaction-item{
+  width: 10em;
+}

@@ -2,6 +2,7 @@ package transactions
 
 import (
 	"IPYP/database"
+	"github.com/docker/distribution/uuid"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	"strconv"
@@ -12,6 +13,7 @@ type transaction struct {
 	ID         int       `json:"id"`
 	Total      int       `json:"total"`
 	Desc       string    `json:"desc"`
+	Recorder   uuid.UUID `json:"recorder"`
 	TransTime  time.Time `json:"time_of_transaction"`
 	RecordTime time.Time `json:"time_of_record"`
 }
@@ -25,10 +27,11 @@ func CreateTransaction(db *database.DB) gin.HandlerFunc {
 			return
 		}
 
-		row := db.Db.QueryRow(`INSERT INTO transaction (total, description, recorder, time_of_record, time_of_transaction) VALUES ($1, $2, $3, $4, $5) returning id`, trans.Total, trans.Desc)
+		row := db.Db.QueryRow(`INSERT INTO transaction (total, description, recorder, time_of_record, time_of_transaction) 
+																VALUES ($1, $2, $3, $4, $5) returning id`, trans.Total, trans.Desc, trans.Recorder, trans.RecordTime, trans.TransTime)
 		err = row.Scan(&trans.ID)
 		if err != nil {
-			c.AbortWithStatusJSON(400, "Invalid transaction description.")
+			c.AbortWithStatusJSON(400, "Invalid transaction data.")
 			return
 		}
 
@@ -60,9 +63,20 @@ func GetTransaction(db *database.DB) gin.HandlerFunc {
 func GetTransactions(db *database.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var events []transaction
-		rows, err := db.Db.Query(`SELECT total, description FROM transaction`)
+		session, err := db.SessionStore.Get(c.Request, "session")
 		if err != nil {
-			c.AbortWithStatusJSON(400, "Invalid transaction ID.")
+			c.AbortWithStatusJSON(500, "The server was unable to retrieve this session")
+			return
+		}
+		googleID := session.Values["GoogleId"]
+
+		rows, err := db.Db.Query(`SELECT total, description FROM transaction
+   										 JOIN user_transaction_bridge utb on transaction.id = utb.transaction_id
+                         				 JOIN account a on transaction.payer = a.user_id
+        									WHERE (payer = a.user_id OR utb.user_id = a.user_id)
+           									 AND google_id = $1`, googleID)
+		if err != nil {
+			c.AbortWithStatusJSON(400, "User not properly registered.")
 			return
 		}
 

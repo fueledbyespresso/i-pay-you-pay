@@ -1,0 +1,51 @@
+@import "./styles/variables.scss";
+
+body {
+  margin: 0 0 4em 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: $nord6;
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+* > {
+  box-sizing: border-box;
+}
+
+button {
+  background: #ddd;
+  border: none;
+  border-radius: .15rem;
+  padding: .25rem .5rem;
+  cursor: pointer;
+  margin: .25rem;
+  box-sizing: border-box;
+  transition: .2s;
+
+  &:hover {
+    background: #eee;
+  }
+
+  &.delete {
+    background: #cd2026;
+    color: #fff;
+
+    &:hover {
+      background: #e31c3d;
+    }
+  }
+}
+
+input {
+  border: solid #ddd .15rem;
+  border-radius: .15rem;
+  box-sizing: border-box;
+}

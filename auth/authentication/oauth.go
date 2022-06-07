@@ -26,7 +26,7 @@ var (
 func ConfigOauth() {
 	if os.Getenv("ENV") == "DEV" {
 		GoogleOauthConfig = &oauth2.Config{
-			RedirectURL:  "http://localhost:5000/oauth/v1/callback",
+			RedirectURL:  "http://localhost:8000/oauth/v1/callback",
 			ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 			ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"},
